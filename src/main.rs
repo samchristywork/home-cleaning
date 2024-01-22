@@ -48,6 +48,23 @@ fn compare_list_of_files_in_current_directory_to_file() {
     if !found {
         println!("  None");
     }
+
+    println!();
+
+    println!("Missing files:");
+    let mut found = false;
+    for line in contents.lines() {
+        if !line.is_empty() {
+            let path = line.to_string();
+            if !file_exists(&path) {
+                println!("  {}", strip_dot_slash(path));
+                found = true;
+            }
+        }
+    }
+    if !found {
+        println!("  None");
+    }
 }
 
 fn main() {

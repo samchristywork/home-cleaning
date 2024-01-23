@@ -80,7 +80,7 @@ fn compare_list_of_files_in_current_directory_to_file() {
 
     let (extra_files, missing_files) = process_lists(paths_array, contents_array);
 
-    println!("Extra files:");
+    println!("Extra files: ({})", extra_files.len());
     if extra_files.is_empty() {
         println!("  None");
     } else {
@@ -91,7 +91,7 @@ fn compare_list_of_files_in_current_directory_to_file() {
 
     println!();
 
-    println!("Missing files:");
+    println!("Missing files: ({})", missing_files.len());
     if missing_files.is_empty() {
         println!("  None");
     } else {

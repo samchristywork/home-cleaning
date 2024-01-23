@@ -10,17 +10,20 @@ fn strip_dot_slash(path: String) -> String {
 }
 
 fn file_exists(filename: &str) -> bool {
-    let metadata = fs::metadata(filename);
-    match metadata {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    fs::metadata(filename).is_ok()
 }
 
 fn write_list_of_files_in_current_directory_to_file() {
-    let mut file = fs::File::create(".clean_home").unwrap();
+    let mut file = fs::File::create(".clean_home").unwrap_or_else(|_| {
+        println!("Unable to create .clean_home file");
+        std::process::exit(1);
+    });
 
-    let paths = fs::read_dir("./").unwrap();
+    let paths = fs::read_dir("./").unwrap_or_else(|_| {
+        println!("Unable to read current directory");
+        std::process::exit(1);
+    });
+
     for path in paths {
         let path = path.unwrap().path();
         let path = path.display().to_string();

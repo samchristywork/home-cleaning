@@ -71,36 +71,33 @@ fn compare_list_of_files_in_current_directory_to_file() {
     let mut file = fs::File::open(".clean_home").unwrap();
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
+    let paths_string_array: Vec<String> = paths
+        .map(|path| path.unwrap().path().display().to_string())
+        .collect();
+
+    let contents_array: Vec<&str> = contents.split('\n').collect();
+    let paths_array: Vec<&str> = paths_string_array.iter().map(|s| &**s).collect();
+
+    let (extra_files, missing_files) = process_lists(paths_array, contents_array);
 
     println!("Extra files:");
-    let mut found = false;
-    for path in paths {
-        let path = path.unwrap().path();
-        let path = path.display().to_string();
-        if !contents.contains(&path) {
-            println!("  {}", strip_dot_slash(path));
-            found = true;
-        }
-    }
-    if !found {
+    if extra_files.is_empty() {
         println!("  None");
+    } else {
+        for extra_file in extra_files {
+            println!("  - {}", strip_dot_slash(extra_file.to_string()));
+        }
     }
 
     println!();
 
     println!("Missing files:");
-    let mut found = false;
-    for line in contents.lines() {
-        if !line.is_empty() {
-            let path = line.to_string();
-            if !file_exists(&path) {
-                println!("  {}", strip_dot_slash(path));
-                found = true;
-            }
-        }
-    }
-    if !found {
+    if missing_files.is_empty() {
         println!("  None");
+    } else {
+        for missing_file in missing_files {
+            println!("  - {}", strip_dot_slash(missing_file.to_string()));
+        }
     }
 }
 

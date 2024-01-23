@@ -101,6 +101,33 @@ fn compare_list_of_files_in_current_directory_to_file() {
     }
 }
 
+fn print_short_indicator() {
+    let paths = fs::read_dir("./").unwrap();
+    let paths_string_array: Vec<String> = paths
+        .map(|path| path.unwrap().path().display().to_string())
+        .collect();
+
+    let mut file = fs::File::open(".clean_home").unwrap_or_else(|_| {
+        let num_files = paths_string_array.len();
+        println!("{}-0-0", num_files);
+        std::process::exit(0);
+    });
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+
+    let contents_array: Vec<&str> = contents.split('\n').collect();
+    let paths_array: Vec<&str> = paths_string_array.iter().map(|s| &**s).collect();
+
+    let (extra_files, missing_files) = process_lists(paths_array.clone(), contents_array);
+
+    println!(
+        "{}-{}-{}",
+        paths_array.len(),
+        extra_files.len(),
+        missing_files.len()
+    );
+}
+
 fn main() {
     if !file_exists(".clean_home") {
         write_list_of_files_in_current_directory_to_file();

@@ -129,8 +129,15 @@ fn print_short_indicator() {
 }
 
 fn main() {
-    if !file_exists(".clean_home") {
-        write_list_of_files_in_current_directory_to_file();
+    let command = std::env::args().nth(1);
+    if command == Some("short".to_string()) {
+        print_short_indicator();
+    } else if command.is_none() {
+        if !file_exists(".clean_home") {
+            write_list_of_files_in_current_directory_to_file();
+        }
+        compare_list_of_files_in_current_directory_to_file();
+    } else {
+        println!("Unknown command: {}", command.unwrap());
     }
-    compare_list_of_files_in_current_directory_to_file();
 }

@@ -32,6 +32,40 @@ fn write_list_of_files_in_current_directory_to_file() {
     }
 }
 
+fn process_lists<'a>(list_a: Vec<&'a str>, list_b: Vec<&'a str>) -> (Vec<&'a str>, Vec<&'a str>) {
+    let mut extra_files: Vec<&str> = Vec::new();
+    for file_a in &list_a {
+        let mut found = false;
+        for file_b in &list_b {
+            if file_a == file_b {
+                found = true;
+                break;
+            }
+        }
+        if !found && !file_a.to_string().is_empty() {
+            extra_files.push(file_a);
+        }
+    }
+    extra_files.sort();
+
+    let mut missing_files: Vec<&str> = Vec::new();
+    for file_b in &list_b {
+        let mut found = false;
+        for file_a in &list_a {
+            if file_a == file_b {
+                found = true;
+                break;
+            }
+        }
+        if !found && !file_b.to_string().is_empty() {
+            missing_files.push(file_b);
+        }
+    }
+    missing_files.sort();
+
+    (extra_files, missing_files)
+}
+
 fn compare_list_of_files_in_current_directory_to_file() {
     let paths = fs::read_dir("./").unwrap();
     let mut file = fs::File::open(".clean_home").unwrap();

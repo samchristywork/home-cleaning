@@ -128,9 +128,19 @@ fn print_short_indicator() {
     );
 }
 
+fn usage() {
+    println!("Usage: clean_home <command>");
+    println!();
+    println!("Commands:");
+    println!("  short - Display a short indicator");
+    println!("  help - Display this help message");
+}
+
 fn main() {
     let command = std::env::args().nth(1);
-    if command == Some("short".to_string()) {
+    if command == Some("help".to_string()) {
+        usage();
+    } else if command == Some("short".to_string()) {
         print_short_indicator();
     } else if command.is_none() {
         if !file_exists(".clean_home") {
@@ -139,5 +149,7 @@ fn main() {
         compare_list_of_files_in_current_directory_to_file();
     } else {
         println!("Unknown command: {}", command.unwrap());
+        println!();
+        usage();
     }
 }
